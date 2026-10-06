@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cẩm Nang Build PC & Remote 4TR</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    .active-nav {
+      background-color: var(--primary) !important;
+      color: var(--primary-foreground) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .tap-scale { transition: transform 0.15s ease; }
+    .tap-scale:active { transform: scale(0.96); }
+    ::-webkit-scrollbar { height: 4px; width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-full pb-20 select-none">
+
+  <!-- Mobile Sticky App Header -->
+  <header class="sticky top-0 z-30 bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)] px-4 py-3">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-lg">
+          🖥️
+        </div>
+        <div>
+          <h1 class="text-sm font-black tracking-tight leading-none text-[var(--foreground)]">PC DEV 4TR • REMOTE</h1>
+          <p class="text-[12px] text-[var(--muted-foreground)] mt-0.5">Trọn bộ 5 phần thực chiến</p>
+        </div>
+      </div>
+      <!-- Shopping progress badge -->
+      <div class="flex items-center gap-1.5 bg-[var(--card)] border border-[var(--border)] px-2.5 py-1 rounded-full text-xs font-semibold">
+        <span class="text-emerald-400">🛒</span>
+        <span id="progress-text">0/6 linh kiện</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-xl mx-auto px-3.5 pt-3 space-y-4">
+
+    <!-- Scrollable 5-Tab Navigation -->
+    <div class="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+      <button onclick="switchTab('tab-checklist')" id="btn-tab-checklist" class="nav-btn active-nav tap-scale flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] shrink-0">
+        <span>🛒</span> 1. Mua sắm
+      </button>
+      <button onclick="switchTab('tab-tools')" id="btn-tab-tools" class="nav-btn tap-scale flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] shrink-0">
+        <span>🧰</span> 2. Dụng cụ
+      </button>
+      <button onclick="switchTab('tab-assembly')" id="btn-tab-assembly" class="nav-btn tap-scale flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] shrink-0">
+        <span>🛠️</span> 3. Lắp ráp A-Z
+      </button>
+      <button onclick="switchTab('tab-remote')" id="btn-tab-remote" class="nav-btn tap-scale flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] shrink-0">
+        <span>💻</span> 4. Setup Remote
+      </button>
+      <button onclick="switchTab('tab-trouble')" id="btn-tab-trouble" class="nav-btn tap-scale flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] shrink-0">
+        <span>⚠️</span> 5. Chú ý & Lỗi
+      </button>
+    </div>
+
+    <!-- ================= MỤC 1: SHOPPING CHECKLIST ================= -->
+    <section id="tab-checklist" class="tab-panel space-y-3">
+      <!-- Budget summary banner -->
+      <div class="p-3.5 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-transparent to-blue-500/5 border border-emerald-500/25">
+        <div class="flex justify-between items-center mb-1.5">
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wide">Tiến độ gom linh kiện chính</span>
+          <span class="text-xs font-black text-[var(--foreground)]">Dự toán: ~3.9 - 4.1tr</span>
+        </div>
+        <div class="w-full bg-[var(--border)] h-2 rounded-full overflow-hidden">
+          <div id="progress-bar" class="bg-emerald-400 h-full transition-all duration-300 w-0"></div>
+        </div>
+        <p class="text-[12px] text-[var(--muted-foreground)] mt-2">
+          💡 <em>Chạm để tick món đã mua. Bấm nút Copy để dán từ khóa vào Shopee/Facebook tìm kiếm.</em>
+        </p>
+      </div>
+
+      <!-- Item Cards -->
+      <div class="space-y-2.5" id="items-list">
+
+        <!-- 1. CPU -->
+        <div class="item-card p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <label class="flex items-start gap-3 cursor-pointer flex-1">
+              <input type="checkbox" onchange="toggleItem(0)" class="item-check w-5 h-5 rounded-md accent-emerald-500 mt-0.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-[var(--foreground)]">AMD Ryzen 5 4600G</span>
+                  <span class="bg-blue-500/15 text-blue-400 text-[12px] px-2 py-0.5 rounded-full font-medium">Bắt buộc đuôi G</span>
+                </div>
+                <p class="text-[12px] text-[var(--muted-foreground)] mt-0.5">6 nhân 12 luồng, có sẵn chip đồ họa Radeon Vega 7 xuất hình.</p>
+              </div>
+            </label>
+            <span class="text-xs font-black text-amber-400 shrink-0">~1.300k</span>
+          </div>
+          <div class="mt-2.5 pt-2.5 border-t border-[var(--border)]/60 flex items-center justify-between gap-2">
+            <span class="text-[12px] text-[var(--muted-foreground)] truncate">Từ khóa: <code class="text-[var(--foreground)]">R5 4600G tray kèm quạt</code></span>
+            <button onclick="copyText('R5 4600G tray kèm quạt')" class="tap-scale shrink-0 px-2.5 py-1 rounded-lg bg-[var(--background)] border border-[var(--border)] text-[12px] font-semibold text-emerald-400 flex items-center gap-1">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Mainboard -->
+        <div class="item-card p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <label class="flex items-start gap-3 cursor-pointer flex-1">
+              <input type="checkbox" onchange="toggleItem(1)" class="item-check w-5 h-5 rounded-md accent-emerald-500 mt-0.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-[var(--foreground)]">Mainboard B450M</span>
+                  <span class="bg-purple-500/15 text-purple-400 text-[12px] px-2 py-0.5 rounded-full font-medium">Socket AM4</span>
+                </div>
+                <p class="text-[12px] text-[var(--muted-foreground)] mt-0.5">Gợi ý: MSI B450M-A Pro Max, Asrock B450M-HDV r4.0.</p>
+              </div>
+            </label>
+            <span class="text-xs font-black text-amber-400 shrink-0">~750k</span>
+          </div>
+          <div class="mt-2.5 pt-2.5 border-t border-[var(--border)]/60 flex items-center justify-between gap-2">
+            <span class="text-[12px] text-amber-400">⚠️ Nhờ chủ shop: "Update BIOS mới nhất giúp em"</span>
+            <button onclick="copyText('MSI B450M Pro cũ')" class="tap-scale shrink-0 px-2.5 py-1 rounded-lg bg-[var(--background)] border border-[var(--border)] text-[12px] font-semibold text-emerald-400 flex items-center gap-1">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. RAM -->
+        <div class="item-card p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <label class="flex items-start gap-3 cursor-pointer flex-1">
+              <input type="checkbox" onchange="toggleItem(2)" class="item-check w-5 h-5 rounded-md accent-emerald-500 mt-0.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-[var(--foreground)]">RAM 32GB (2 x 16GB DDR4)</span>
+                  <span class="bg-cyan-500/15 text-cyan-400 text-[12px] px-2 py-0.5 rounded-full font-medium">Dual-Channel</span>
+                </div>
+                <p class="text-[12px] text-[var(--muted-foreground)] mt-0.5">Bus 3200MHz. Kingston Fury, Corsair, Lexar, Apacer.</p>
+              </div>
+            </label>
+            <span class="text-xs font-black text-amber-400 shrink-0">~900k</span>
+          </div>
+          <div class="mt-2.5 pt-2.5 border-t border-[var(--border)]/60 flex items-center justify-between gap-2">
+            <span class="text-[12px] text-[var(--muted-foreground)] truncate">Từ khóa: <code class="text-[var(--foreground)]">RAM DDR4 16GB 3200 cũ</code></span>
+            <button onclick="copyText('RAM DDR4 16GB 3200 cũ')" class="tap-scale shrink-0 px-2.5 py-1 rounded-lg bg-[var(--background)] border border-[var(--border)] text-[12px] font-semibold text-emerald-400 flex items-center gap-1">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. SSD -->
+        <div class="item-card p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <label class="flex items-start gap-3 cursor-pointer flex-1">
+              <input type="checkbox" onchange="toggleItem(3)" class="item-check w-5 h-5 rounded-md accent-emerald-500 mt-0.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-[var(--foreground)]">SSD 500GB M.2 NVMe</span>
+                  <span class="bg-emerald-500/15 text-emerald-400 text-[12px] px-2 py-0.5 rounded-full font-medium">Nên mua mới</span>
+                </div>
+                <p class="text-[12px] text-[var(--muted-foreground)] mt-0.5">Tốc độ ~3.000 MB/s. Kioxia G2, Kingston NV2, Lexar.</p>
+              </div>
+            </label>
+            <span class="text-xs font-black text-amber-400 shrink-0">~600k</span>
+          </div>
+          <div class="mt-2.5 pt-2.5 border-t border-[var(--border)]/60 flex items-center justify-between gap-2">
+            <span class="text-[12px] text-[var(--muted-foreground)] truncate">Từ khóa: <code class="text-[var(--foreground)]">SSD NVMe 500GB M2</code></span>
+            <button onclick="copyText('SSD NVMe 500GB M2')" class="tap-scale shrink-0 px-2.5 py-1 rounded-lg bg-[var(--background)] border border-[var(--border)] text-[12px] font-semibold text-emerald-400 flex items-center gap-1">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Nguồn -->
+        <div class="item-card p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <label class="flex items-start gap-3 cursor-pointer flex-1">
+              <input type="checkbox" onchange="toggleItem(4)" class="item-check w-5 h-5 rounded-md accent-emerald-500 mt-0.5">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-[var(--foreground)]">Nguồn CST 550W – 600W</span>
+                  <span class="bg-amber-500/15 text-amber-400 text-[12px] px-2 py-0.5 rounded-full font-medium">Sẵn dây 8-pin</span>
+                </div>
+                <p class="text-[12px] text-[var(--muted-foreground)] mt-0.5">Cooler Master MWE 550, Corsair CV550, Xigmatek 650.</p>
+              </div>
+            </label>
+            <span class="text-xs font-black text-amber-400 shrink-0">~380k</span>
+          </div>
+          <div class="mt-2.5 pt-2.5 border-t border-[var(--border)]/60 flex items-center justify-between gap-2">
+            <span class="text-[12px] text-emerald-400 font-semibold">Để sau cắm card RTX 3060 không phải đổi nguồn!</span>
+            <button onclick="copyText('Nguồn Cooler Master 550W cũ')" class="tap-scale shrink-0 px-2.5 py-1 rounded-lg bg-[var(--background)] border border-[var(--border)] text-[12px] font-semibold text-emerald-400 flex items-center gap-1">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- 6. Vỏ case -->
+        <div class="item-card p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] transition-all">
+          <div class="flex items-start justify-between gap-2">
+            <label class="flex items-start gap-3 cursor-pointer flex-1">
+              <input type="checkbox" onchange="toggleItem(5)" class="item-check w-5 h-5 rounded-md accent-emerald-500 mt-0.5">
+              <div>
+                <span class="font-bold text-sm text-[var(--foreground)]">Vỏ Case Văn Phòng Cũ</span>
+                <p class="text-[12px] text-[var(--muted-foreground)] mt-0.5">Ra tiệm vi tính gần nhà hỏi thùng case cũ lành lặn.</p>
+              </div>
+            </label>
+            <span class="text-xs font-black text-amber-400 shrink-0">~100k</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Combo tip -->
+      <div class="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-xs text-[var(--muted-foreground)] space-y-1">
+        <strong class="text-blue-400 block font-bold">👑 MẸO MUA NHÀN NHẤT CHO NGƯỜI MỚI:</strong>
+        <p>Lên Facebook tìm: <code class="bg-[var(--card)] px-1 py-0.5 rounded text-[var(--foreground)]">"Bán combo R5 4600G B450M 32GB"</code>. Thợ ráp sẵn Main + Chip + RAM test mượt mà giá chỉ khoảng <strong>2.8tr - 3.0tr</strong>. Mua kiểu này an toàn và tiện nhất!</p>
+      </div>
+    </section>
+
+    <!-- ================= MỤC 2: DỤNG CỤ CHUẨN BỊ ================= -->
+    <section id="tab-tools" class="tab-panel hidden space-y-3">
+      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/25">
+        <h2 class="font-bold text-sm text-amber-400 flex items-center gap-2">
+          <span>🧰</span> Dụng cụ phụ trợ cần có trước khi bắt đầu
+        </h2>
+        <p class="text-[12px] text-[var(--muted-foreground)] mt-1">
+          Chỉ cần chuẩn bị 4 món đơn giản này là bạn có thể hoàn thành việc lắp ráp và điều khiển PC từ xa.
+        </p>
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        
+        <!-- Tool 1 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] flex items-start gap-3">
+          <span class="text-2xl shrink-0 mt-0.5">🪛</span>
+          <div class="space-y-1 flex-1">
+            <strong class="text-sm text-[var(--foreground)] block">1. Tô vít 4 cạnh (Có đầu nam châm)</strong>
+            <p class="text-[var(--muted-foreground)]">Dụng cụ DUY NHẤT để lắp ráp toàn bộ máy. Nam châm ở đầu vít giúp giữ ốc không bị rơi vào khe hẹp mainboard.</p>
+            <span class="text-[11px] text-emerald-400 font-semibold block">Có sẵn trong nhà hoặc mua tiệm điện nước ~20k.</span>
+          </div>
+        </div>
+
+        <!-- Tool 2 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-red-500/30 flex items-start gap-3">
+          <span class="text-2xl shrink-0 mt-0.5">🔌</span>
+          <div class="space-y-1 flex-1">
+            <div class="flex items-center justify-between">
+              <strong class="text-sm text-red-400">2. Đầu HDMI Dummy Plug (BẮT BUỘC)</strong>
+              <button onclick="copyText('HDMI Dummy 4K')" class="tap-scale px-2 py-0.5 rounded-lg bg-[var(--background)] border border-[var(--border)] text-[12px] font-semibold text-emerald-400">
+                📋 Copy
+              </button>
+            </div>
+            <p class="text-[var(--muted-foreground)]">Cục cắm giả lập nhỏ như ngón tay cắm vào cổng HDMI của PC (giá chỉ <strong>20.000 – 30.000đ trên Shopee</strong>).</p>
+            <p class="text-amber-400">⭐ Tác dụng: Đánh lừa Windows rằng đang có màn hình cắm. Nếu không có cục này, khi laptop remote vào thì màn hình sẽ bị đen hoặc giật lag!</p>
+          </div>
+        </div>
+
+        <!-- Tool 3 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] flex items-start gap-3">
+          <span class="text-2xl shrink-0 mt-0.5">🌐</span>
+          <div class="space-y-1 flex-1">
+            <strong class="text-sm text-[var(--foreground)] block">3. Dây mạng LAN (Bấm sẵn 2 đầu)</strong>
+            <p class="text-[var(--muted-foreground)]">Mua dây 2m - 5m (~15k - 20k). Cắm từ cổng LAN của cục Wifi thẳng vào đít máy PC. Dùng dây mạng giúp điều khiển remote mượt như máy thật, không bị giật như bắt wifi.</p>
+          </div>
+        </div>
+
+        <!-- Tool 4 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] flex items-start gap-3">
+          <span class="text-2xl shrink-0 mt-0.5">💾</span>
+          <div class="space-y-1 flex-1">
+            <strong class="text-sm text-[var(--foreground)] block">4. Một chiếc USB 8GB hoặc 16GB</strong>
+            <p class="text-[var(--muted-foreground)]">Dùng laptop hiện tại tải phần mềm Rufus và file ISO Windows 11 / Ubuntu tạo sẵn USB cài máy (nếu bạn muốn tự cài hệ điều hành).</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= MỤC 3: CÁC BƯỚC LẮP RÁP ================= -->
+    <section id="tab-assembly" class="tab-panel hidden space-y-3">
+      <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-xs text-[var(--muted-foreground)]">
+        🔧 <strong>Quy tắc số 1:</strong> Lắp toàn bộ CPU, RAM, SSD và quạt tản nhiệt lên Mainboard ở bên ngoài mặt bàn trước khi đưa vào thùng case!
+      </div>
+
+      <div class="space-y-3 text-xs">
+        
+        <!-- Step 1 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">1</span>
+            <h3 class="font-bold text-sm text-[var(--foreground)]">Lắp CPU vào Main (Cực nhẹ tay)</h3>
+          </div>
+          <p class="text-[var(--muted-foreground)]">Đặt mainboard lên mặt hộp giấy. Gạt cần sắt socket lên 90 độ. Tìm <strong>tam giác vàng nhỏ</strong> ở góc chip, đối chiếu đúng góc tam giác trên mainboard rồi thả nhẹ nhàng vào.</p>
+          <div class="p-2 rounded-lg bg-red-500/10 text-red-400 font-medium">
+            ⛔ KHÔNG DÙNG LỰC ẤN! Thả vào tự lọt khít. Thấy phẳng rồi mới gạt cần sắt xuống gài khóa.
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">2</span>
+            <h3 class="font-bold text-sm text-[var(--foreground)]">Cắm RAM (Nghe 2 tiếng "Tách")</h3>
+          </div>
+          <p class="text-[var(--muted-foreground)]">Mở lẫy nhựa ở đầu khe RAM. Canh đúng rãnh khuyết chân RAM. Dùng 2 ngón tay cái ấn dứt khoát 2 đầu thanh RAM xuống cho tới khi nghe <strong>"TÁCH"</strong> và lẫy tự đóng lại.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">3</span>
+            <h3 class="font-bold text-sm text-[var(--foreground)]">Gắn SSD M.2 NVMe</h3>
+          </div>
+          <p class="text-[var(--muted-foreground)]">Cắm xéo thanh SSD góc 30 độ vào khe M.2. Đè nhẹ thân SSD nằm ngang xuống rồi lấy con ốc nhỏ xíu vặn giữ đuôi thanh SSD lại.</p>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">4</span>
+            <h3 class="font-bold text-sm text-[var(--foreground)]">Gắn quạt tản nhiệt CPU</h3>
+          </div>
+          <p class="text-[var(--muted-foreground)]">Nhỏ 1 giọt keo tản nhiệt (cỡ hạt đậu) vào giữa lưng chip. Đặt quạt lên, vặn 4 ốc theo <strong>đường chéo chữ X</strong> (vặn mỗi ốc 2 vòng rồi đổi góc đối diện). Cắm dây quạt vào chân <code class="bg-[var(--background)] px-1 rounded border border-[var(--border)]">CPU_FAN</code>.</p>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">5</span>
+            <h3 class="font-bold text-sm text-[var(--foreground)]">Đặt Nguồn & Main vào Thùng Case</h3>
+          </div>
+          <p class="text-[var(--muted-foreground)]">Bắt nguồn vào case trước. Gắn miếng che cổng (Fe chặn) vào đít case. Nhìn kỹ các <strong>ốc chân đồng (Standoff)</strong> đã kê đủ chưa, sau đó đặt mainboard vào bắt ốc cố định.</p>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">6</span>
+            <h3 class="font-bold text-sm text-[var(--foreground)]">Cắm 3 sợi dây nguồn chính</h3>
+          </div>
+          <ul class="space-y-1.5 text-[var(--muted-foreground)]">
+            <li>• <strong>Dây 24-pin to bự:</strong> Cắm vào cạnh phải mainboard.</li>
+            <li>• <strong>Dây 8-pin ghi chữ CPU:</strong> Cắm vào góc trên gần quạt CPU.</li>
+            <li>• <strong>Dây Power SW (Nút bật nguồn):</strong> Cắm vào 2 chân Power SW góc dưới cùng bên phải mainboard.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= MỤC 4: SETUP REMOTE ================= -->
+    <section id="tab-remote" class="tab-panel hidden space-y-3">
+      <!-- Highlight Box -->
+      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/25">
+        <h3 class="text-sm font-bold text-blue-400 flex items-center gap-1.5">
+          <span>🎯</span> Mô hình: PC giấu gầm bàn, Laptop điều khiển 100%
+        </h3>
+        <p class="text-xs text-[var(--muted-foreground)] mt-1">
+          Ngồi quán cafe hay trên giường vẫn dùng Laptop kết nối vào con PC 32GB RAM ở nhà để build code, chạy Docker và AI mượt mà.
+        </p>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        
+        <!-- Giai đoạn 1 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <span class="text-amber-400 font-bold block text-sm">GIAI ĐOẠN 1: MƯỢN MÀN HÌNH ĐÚNG 1 LẦN DUY NHẤT (30 PHÚT)</span>
+          <p class="text-[var(--muted-foreground)]">Vì máy mới ráp chưa có hệ điều hành, bạn có 2 cách siêu dễ:</p>
+          <div class="space-y-2 mt-2">
+            <div class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <strong class="text-emerald-400 block mb-0.5">Cách A (Nhàn nhất - Khuyên dùng):</strong>
+              <p class="text-[var(--muted-foreground)]">Khi mua combo ở tiệm, nhờ luôn anh thợ: <em>"Anh cắm màn hình cài sẵn Windows 11 Pro và BẬT SẴN REMOTE DESKTOP giúp em với!"</em>. Họ làm 10 phút là xong.</p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <strong class="text-blue-400 block mb-0.5">Cách B (Tự làm tại nhà):</strong>
+              <p class="text-[var(--muted-foreground)]">Cắm dây HDMI từ PC vào <strong>chiếc Tivi phòng khách</strong> nhà bạn trong 30 phút để tự cài Win.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Giai đoạn 2 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <span class="text-blue-400 font-bold block text-sm">GIAI ĐOẠN 2: BẬT TÍNH NĂNG REMOTE TRÊN PC</span>
+          <ol class="list-decimal list-inside space-y-1.5 text-[var(--muted-foreground)]">
+            <li>Vào <strong class="text-[var(--foreground)]">Settings</strong> → <strong class="text-[var(--foreground)]">System</strong> → <strong class="text-[var(--foreground)]">Remote Desktop</strong> → Bật sang <strong class="text-emerald-400">ON</strong>.</li>
+            <li>Bấm phím <code>Windows + R</code>, gõ <code>cmd</code>, gõ lệnh: <code class="text-emerald-400 bg-[var(--background)] px-1.5 py-0.5 rounded border border-[var(--border)]">ipconfig</code> để xem địa chỉ IP (Ví dụ: <code>192.168.1.15</code>).</li>
+            <li>Cài thêm ứng dụng <strong class="text-blue-400">RustDesk</strong> (miễn phí tại rustdesk.com) để remote qua mạng ngoài khi đi cafe.</li>
+          </ol>
+        </div>
+
+        <!-- Giai đoạn 3 -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-2">
+          <span class="text-purple-400 font-bold block text-sm">GIAI ĐOẠN 3: RÚT DÂY VÀ ĐIỀU KHIỂN TỪ LAPTOP</span>
+          <ol class="list-decimal list-inside space-y-1.5 text-[var(--muted-foreground)]">
+            <li>Rút dây cắm TV ra.</li>
+            <li>Cắm cục <strong class="text-amber-400">HDMI Dummy Plug (25k)</strong> vào cổng HDMI trên PC.</li>
+            <li>Cắm dây mạng LAN + dây nguồn vào PC rồi bấm bật máy. Cất PC dưới gầm bàn.</li>
+            <li><strong>Mở Laptop lên:</strong> Bấm <code>Windows + R</code>, gõ <code class="text-emerald-400 bg-[var(--background)] px-1.5 py-0.5 rounded border border-[var(--border)]">mstsc</code> rồi Enter. Nhập IP <code>192.168.1.15</code> và mật khẩu PC.</li>
+          </ol>
+          <div class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 font-semibold mt-2">
+            🎉 Xong! Toàn bộ màn hình PC hiện lên laptop nét căng 60fps, dùng chuột bàn phím laptop điều khiển như máy thật!
+          </div>
+        </div>
+
+        <!-- Tuyệt kỹ VS Code -->
+        <div class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] space-y-1.5">
+          <strong class="text-cyan-400 text-sm block">🚀 Dùng VS Code Remote SSH (Chuẩn dân Pro IT):</strong>
+          <p class="text-[var(--muted-foreground)]">
+            Bạn cài extension <strong>Remote - SSH</strong> trên VS Code của laptop. Lúc code, bạn mở VS Code trên laptop gõ phím nhẹ tênh, nhưng toàn bộ code, Docker, AI model đều chạy ngầm trên con PC 32GB RAM ở nhà!
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= MỤC 5: CỨU HỘ & LỖI ================= -->
+    <section id="tab-trouble" class="tab-panel hidden space-y-3">
+      <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-xs text-red-400 font-semibold">
+        ⚠️ Đọc kỹ trước khi cắm điện để tránh chập cháy hoặc hoảng loạn khi máy chưa lên!
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        
+        <details class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] cursor-pointer">
+          <summary class="font-bold text-sm text-[var(--foreground)] flex items-center justify-between">
+            <span>🔥 1. Tránh chập cháy Mainboard (Lỗi chết người)</span>
+            <span class="text-muted text-xs">▼</span>
+          </summary>
+          <p class="text-[var(--muted-foreground)] mt-2">
+            Phải vặn đủ các con ốc chân đồng (Standoff) để nâng mainboard cách tấm sắt của thùng case. Nếu đặt lưng mainboard tiếp xúc trực tiếp tấm sắt vỏ case rồi bật nguồn: <strong>Main sẽ bốc khói cháy ngay lập tức!</strong>
+          </p>
+        </details>
+
+        <details class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] cursor-pointer" open>
+          <summary class="font-bold text-sm text-amber-400 flex items-center justify-between">
+            <span>🔌 2. Bật máy quạt quay nhưng không lên gì?</span>
+            <span class="text-muted text-xs">▼</span>
+          </summary>
+          <div class="text-[var(--muted-foreground)] mt-2 space-y-1.5">
+            <p><strong>90% là do lỏng RAM:</strong> Rút điện, tháo 2 thanh RAM ra. Lấy cục tẩy chà sạch hàng chân đồng màu vàng, cắm ấn thật mạnh 2 đầu cho nghe 2 tiếng "Tách" dứt khoát.</p>
+            <p><strong>10% là do chưa update BIOS:</strong> Main B450 cũ cần update BIOS mới nhận chip Ryzen 4600G (đó là lý do cần nhờ tiệm update trước khi mang về).</p>
+          </div>
+        </details>
+
+        <details class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] cursor-pointer">
+          <summary class="font-bold text-sm text-[var(--foreground)] flex items-center justify-between">
+            <span>💻 3. Remote vào máy bị màn hình đen hoặc giật lag?</span>
+            <span class="text-muted text-xs">▼</span>
+          </summary>
+          <p class="text-[var(--muted-foreground)] mt-2">
+            Vì Windows không phát hiện màn hình nên nó tắt bộ tăng tốc đồ họa. Hãy cắm cục <strong>HDMI Dummy Plug</strong> vào cổng HDMI trên PC là khắc phục 100%.
+          </p>
+        </details>
+
+        <details class="p-3.5 rounded-2xl bg-[var(--card)] border border-[var(--border)] cursor-pointer">
+          <summary class="font-bold text-sm text-[var(--foreground)] flex items-center justify-between">
+            <span>⚡ 4. Cắm nhầm dây nguồn CPU và dây PCI-E?</span>
+            <span class="text-muted text-xs">▼</span>
+          </summary>
+          <p class="text-[var(--muted-foreground)] mt-2">
+            Nhìn chữ in nổi trên đầu nhựa cắm: Dây cắm góc trên mainboard phải ghi chữ <strong>CPU</strong>. Dây ghi chữ <strong>PCI-E</strong> là dành cho card đồ họa rời (bó lại cất đi, sau này mua card mới cắm).
+          </p>
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-emerald-500 text-black px-4 py-2 rounded-xl text-xs font-bold shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
+    <span>✓</span> <span id="toast-msg">Đã sao chép vào bộ nhớ tạm!</span>
+  </div>
+
+  <!-- JavaScript logic -->
+  <script>
+    // Tab switching for 5 tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active-nav');
+        btn.classList.add('text-[var(--muted-foreground)]');
+      });
+      
+      document.getElementById(tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('btn-' + tabId);
+      activeBtn.classList.add('active-nav');
+      activeBtn.classList.remove('text-[var(--muted-foreground)]');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Copy helper
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Đã sao chép: "' + text + '"');
+      }).catch(() => {
+        showToast('Đã copy!');
+      });
+    }
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100', '-translate-y-2');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', '-translate-y-2');
+        toast.classList.add('opacity-0');
+      }, 2000);
+    }
+
+    // Checklist state
+    const STORAGE_KEY = 'pc_build_checklist_v2';
+    let checkedItems = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[false,false,false,false,false,false]');
+
+    function initChecklist() {
+      const checkboxes = document.querySelectorAll('.item-check');
+      checkboxes.forEach((cb, index) => {
+        cb.checked = !!checkedItems[index];
+        updateCardStyle(cb, checkedItems[index]);
+      });
+      updateProgress();
+    }
+
+    function toggleItem(index) {
+      const checkboxes = document.querySelectorAll('.item-check');
+      checkedItems[index] = checkboxes[index].checked;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checkedItems));
+      updateCardStyle(checkboxes[index], checkedItems[index]);
+      updateProgress();
+    }
+
+    function updateCardStyle(cb, isChecked) {
+      const card = cb.closest('.item-card');
+      if (isChecked) {
+        card.classList.add('opacity-60', 'bg-[var(--background)]');
+      } else {
+        card.classList.remove('opacity-60', 'bg-[var(--background)]');
+      }
+    }
+
+    function updateProgress() {
+      const total = checkedItems.length;
+      const count = checkedItems.filter(Boolean).length;
+      const percent = Math.round((count / total) * 100);
+      
+      document.getElementById('progress-bar').style.width = percent + '%';
+      document.getElementById('progress-text').innerText = count + '/' + total + ' linh kiện';
+    }
+
+    window.addEventListener('DOMContentLoaded', initChecklist);
+  </script>
+</body>
+</html>
